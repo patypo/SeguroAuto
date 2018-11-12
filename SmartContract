@@ -1,0 +1,111 @@
+pragma solidity ^0.4.25;
+
+//Creando el contrato
+//Creado en base a Seguro de auto particular completo
+contract seguros {
+    
+   struct Persona{
+    uint256 id;
+    bytes32 nombre;
+    bytes32 apellido;
+    bytes32 cedula;
+    bytes32 email;
+    bytes32 sexo;
+    bytes32 nacionalidad;
+    bytes32 civil;
+    int256 telefono;
+    int256 celular;
+    }
+    mapping(uint256 => Persona) public personas;
+    
+   struct Auto{
+    int256 id;
+    bytes32 marca;
+    bytes32 modelo;
+    int256 an;
+    bytes32 km;
+    int256 precio;
+    }
+    mapping(uint256 => Auto) public autos;
+    
+    struct Registros{
+    uint256 id;
+    bytes32 tramite;
+    int256 cantidad;
+    int256 perdida;
+    }
+    mapping(uint256 => Registros) public registro;
+    address public seguro;
+ 
+    
+     constructor () public {
+        uint256 i = 0;
+         uint256 j = 0;
+         int256 k = 0;
+         bool compra = false;
+         DatosPersonales(0,"Conrad","Clarke","8-945-504","conrad123@hotmail.com","masculino","panameño","soltero",2772792,64605433);
+         DatosAutos(0,"Hyundai","I20",2018,"0",16999);
+      
+    }
+//validando que la informacion solo la pueda ver la aseguradora
+    modifier onlySeguro() {
+        require(msg.sender == seguro);
+        _;
+    }
+    
+//Ingresando los datos de la persona
+       function DatosPersonales (uint256 id,bytes32 nombre,bytes32 apellido,bytes32 cedula,bytes32 email,bytes32 sexo,bytes32 nacionalidad,bytes32 civil,int256 telefono,int256 celular)public{
+        uint256 i;
+        personas[i]=Persona( {id: id,nombre: nombre, apellido: apellido, cedula: cedula, email: email, sexo: sexo, nacionalidad: nacionalidad, civil: civil, telefono: telefono, celular: celular});
+        i++;
+    }
+      
+//Ingresando los datos del auto
+    function DatosAutos(int256 id,bytes32 marca,bytes32 modelo,int256 an,bytes32 km,int256 precio)public {
+        uint256 j;
+        autos[j]=Auto({id: id, marca: marca, modelo: modelo, an: an, km: km, precio: precio});
+        j=j+1;
+        
+    }
+    
+    function RegistroAccidente (uint256 id,bytes32 accidente,bytes32 tramite,int256 cantidad,int256 perdida)public{
+        uint256 k=0;
+
+        registro[k]=Registros({id: id, tramite: tramite, cantidad:cantidad , perdida: perdida});
+        k++;
+      }
+      
+//calcular el monto anual y mensual del seguro
+    function Cotizacion(uint ganancia,int256 choques)public payable returns (uint){
+        uint  mes;
+        uint letra;
+        uint anual;
+        uint monto;
+        uint des;
+        mes=monto+500;
+        mes=mes+ganancia/2;
+        mes=mes * 38/100;
+        mes=mes*2;
+        anual=mes*12;
+        if(choques<=1){
+            //descuento de 25% de monto anual
+            des=des+anual;
+            des=des*25/100;
+            monto=anual-des;
+            letra=anual/12;
+        }else if(choques >1&&choques<=10){
+         //descuento de 15% de monto anual
+            des=des+mes*15/100;
+            monto=mes-des;
+        }
+        return(monto);
+    }
+    
+ //Comprar Seguro
+    function ComprarSeguro(bool compra)public payable returns (bytes32){
+    if(compra==true){
+            return("Registro Exitoso");
+        }
+    }
+    
+}
